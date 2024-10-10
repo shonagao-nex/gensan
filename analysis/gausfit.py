@@ -9,17 +9,17 @@ def combined_func(x, p0, p1, p2, p3, p4):
     return gauss + f1
 
 # 初期パラメータの推測とバウンズ
-fit_min = 800
-fit_max = 1200
-p_init = [1000, 1000, 10, -0.01, 100]
-p_range = ([0, 900, 1, -10, 0], [1000000, 1100, 50, 0, 10000])
+fit_min = 3400
+fit_max = 3520
+p_init = [1000, 3480, 10, -0.01, 100]
+p_range = ([0, 3400, 1, -10, 0], [1000000, 3600, 50, 0, 10000])
 
 print("Initial parameters:")
 for i, initial in enumerate(p_init):
     print(f"  p{i}: {initial:.2e}")
 
 # ファイルの内容を読み込む
-file_path = 'data.txt'
+file_path = 'co60.txt'
 try:
     with open(file_path, 'r') as file:
         lines = file.readlines()
@@ -42,6 +42,7 @@ y_data_full = np.array(data)
 # フィットするデータ範囲の選択
 x_data = np.arange(fit_min, fit_max)
 y_data = np.array(data[fit_min:fit_max])
+y_data = np.where(y_data <= 0, 0.0001, y_data)
 y_errors = np.sqrt(y_data)  # 各データ点の誤差（平方根を誤差として使用）
 
 # フィッティング試行
@@ -75,7 +76,7 @@ plt.xlabel('Channel', fontsize=30)
 plt.ylabel('Counts', fontsize=30)
 plt.tick_params(axis='both', which='major', labelsize=20)
 plt.xlim(0, len(data))
-plt.ylim(8, max(data)*1.1)
+#plt.ylim(8, max(data)*1.1)
 plt.subplots_adjust(left=0.10, right=0.95, top=0.90, bottom=0.10)
 plt.yscale('log')
 plt.legend(fontsize=24)
