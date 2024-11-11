@@ -1,0 +1,141 @@
+<html>
+  <head>
+    <title>Student Exp at E7b</title>
+    <!-- <meta http-equiv="refresh" content=10> -->
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  
+  <body>
+    <h1>Student Experiment @E7b</h1>
+
+    <hr>
+
+    <h2>Si rotation</h2>
+
+    <p>
+      <form method="POST" action="/">
+	Current position : {{pos_rot}} deg
+	<button type="submit" name="action" value="read_rot">Read</button>
+      </form>
+    </p>
+    <form method="POST" action="/">
+      <input class="text" name="rot" type="text" value="{{set_rot}}"/>
+      <div class="unit">deg</div>
+      <button type="submit" name="action" value="move_rot">MOVE</button>
+      <button type="submit" name="action" value="stop_rot">STOP</button>
+    </form>
+    
+    <hr>
+
+    <h2>Targets</h2>
+
+    <p>
+    </p>
+    
+    <table border="1">
+      <tr>
+	<th colspan="3">Si target (upstream)</th>
+	<th colspan="3">Ge target (downstream)</th>
+      </tr>
+      <tr>
+	<th>Current Position</th>
+	<td>{{pos_si}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tSir'>Update</button>
+	  </form>
+	</td>
+	<th>Current Position</th>
+	<td>{{pos_ge}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGer'>Update</button>
+	  </form>
+	</td>
+      </tr>
+      <tr>
+	<td>Empty</td>
+	<td>{{tSi0}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tSi0'>set</button>
+	  </form>
+	</td>
+	<td>Empty</td>
+	<td>{{tGe0}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGe0'>set</button>
+	  </form>
+	</td>
+      </tr>	
+      <tr>
+	<td>ZnS</td>
+	<td>{{tSi1}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tSi1'>set</button>
+	  </form>
+	</td>
+	<td>ZnS</td>
+	<td>{{tGe1}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGe1'>set</button>
+	  </form>
+	</td>
+      </tr>	
+      <tr>
+	<td>Au-1</td>
+	<td>{{tSi2}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tSi2'>set</button>
+	  </form>
+	</td>
+	<td>Sm-152</td>
+	<td>{{tGe2}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGe2'>set</button>
+	  </form>
+	</td>
+      </tr>	
+      <tr>
+	<td>Au-2</td>
+	<td>{{tSi3}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tSi3'>set</button>
+	  </form>
+	</td>
+	<td>W-182</td>
+	<td>{{tGe3}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGe3'>set</button>
+	  </form>
+	</td>
+      </tr>	
+      <tr>
+	<td> - </td>
+	<td></td>
+	<td></td>
+	<td>BG</td>
+	<td>{{tGe4}}</td>
+	<td>
+	  <form method="POST" action="/">
+	    <button type='submit' name='action' value='tGe4'>set</button>
+	  </form>
+	</td>
+      </tr>	
+    </table>
+
+    <hr>
+    
+  </body>
+  
+  <footer>
+    <p>Current time: {{now}}</p>
+  </footer>
+</html>

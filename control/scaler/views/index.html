@@ -1,0 +1,91 @@
+<html>
+  <head>
+    <title>Scaler Contoroller</title>
+    <!-- <meta http-equiv="refresh" content=10> -->
+    <style>
+      button {
+      width: 100px;
+      height: 30px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      font-weight: 500;
+      color: #333;
+      background-color: #aaa;
+      border: none;
+      border-radius: 45px;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease 0s;
+      cursor: pointer;
+      outline: none;
+      }
+
+      button:hover {
+      background-color: #2EE59D;
+      box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+      color: #fff;
+      transform: translateY(-3px);
+      }
+
+      form {
+      display:inline;
+      }
+      input {
+      width: 200px;
+      height: 30px;
+      font-size: 14px;
+      }
+
+      div.ch {
+      font-size: 16px;
+      }
+
+      div.unit {
+      display:inline;
+      font-size: 20px;
+      margin-left: 5px;
+      margin-right: 20px;
+      }
+
+      hr {
+      margin-top: 30px;
+      margin-bottom: 30px;
+      }
+
+      table {
+      width: 450px;
+      border-width: 1px;
+      }
+
+      table tr th,
+      table tr td {
+      text-align: center;
+      }
+
+      table tr {
+      height: 30px;
+      }
+      </style>
+  </head>
+  
+  <body>
+    <h1>Scaler Controller</h1>
+
+
+    <form method="GET" action="/">
+      <button type='submit' name='action' value='start'>START</button>
+      <button type='submit' name='action' value='stop'>STOP</button>
+      <button type='submit' name='action' value='reset'>RESET</button>
+    </form>
+    <br/>
+    <br/>
+    <br/>    
+<!--    <img src="http://172.27.213.136:8080/video" width=800> -->
+    <img src="http://172.27.213.69:8080/video" width=800>
+  </body>
+  
+  <footer>
+    <p>Current time: {{now}}</p>
+  </footer>
+</html>
