@@ -102,3 +102,5 @@
 *.old
 *pycache*
 *.gif
+*.txt
+*.log
