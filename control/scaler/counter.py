@@ -44,8 +44,6 @@ def callback(pin):
     if monitoring:
         global counter
         counter += 1
-        label.config(text=f"Count: {counter} / 0.1nQ")
-        update_frequency()
 
 # タイマー更新関数
 def update_timer():
@@ -55,14 +53,19 @@ def update_timer():
         elapsed_time = current_time - start_time
         formatted_time = f"{elapsed_time:.3f} sec"
         timer_label.config(text=f"Time: {formatted_time}")
-        root.after(280, update_timer)
+        update_counter()
         update_frequency()
+        root.after(280, update_timer)
 
 # フリクエンシー更新関数
 def update_frequency():
     if elapsed_time > 0:
         frequency = counter / elapsed_time / 10
         frequency_label.config(text=f"Current: {frequency:.3f} nQ/s")
+
+def update_counter():
+    if elapsed_time > 0:
+        label.config(text=f"Count: {counter} / 0.1nQ")
 
 # ボタンの状態設定関数
 def set_button_state(start_enabled, stop_enabled, reset_enabled):
@@ -85,6 +88,7 @@ def stop_monitoring():
     elapsed_time = stop_time - start_time  # 更新停止時の経過時間を固定
     formatted_time = f"{elapsed_time:.3f} sec"
     timer_label.config(text=f"Time: {formatted_time}")
+    update_counter()
     update_frequency()
     set_button_state(True, False, True)
 

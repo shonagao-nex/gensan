@@ -11,9 +11,9 @@ def ReadPosition(ser):
         while True:
             response = ser.readline().decode().rstrip("\r\n")
             match_moving   = re.search(r'Move = (\d)', response)
-            match_position = re.search(r'PC2 = (\d+)', response)
+            match_position = re.search(r'PC2 = (-?\d+)', response)
             if response == '':
-                print("Success")
+                print("Position Readout Success")
                 break
             if "Syntax error" in response:
                 print("Syntax Error")
@@ -26,11 +26,12 @@ def ReadPosition(ser):
                     pass
             if match_position:
                 position = int(match_position.group(1))
-                print("Position = {}".format(position))
+                print("Position = {} step, {:.1f} mm".format(position, float(position) / 10))
         if status == 0:
             break
         elif status == 1:
             time.sleep(1)
+    return position
 
 def ReadAngle(ser):
     while True:
@@ -41,9 +42,9 @@ def ReadAngle(ser):
         while True:
             response = ser.readline().decode().rstrip("\r\n")
             match_moving   = re.search(r'Move = (\d)', response)
-            match_position = re.search(r'PC1 = (\d+)', response)
+            match_position = re.search(r'PC1 = (-?\d+)', response)
             if response == '':
-                print("Success")
+                print("Angle Readout Success")
                 break
             if "Syntax error" in response:
                 print("Syntax Error")
@@ -55,8 +56,8 @@ def ReadAngle(ser):
                 elif status == 0:
                     pass
             if match_position:
-                position = int(match_position.group(1)) / 20
-                print("Angle = {:.1f} degrees".format(position))
+                position = int(match_position.group(1))
+                print("Angle = {} step, {:.1f} deg".format(position, float(position) / 20))
         if status == 0:
             break
         elif status == 1:
@@ -69,7 +70,7 @@ def GoPosition(ser, num):
     ReadLine(ser)
     ser.write(b'abs2\r\n')
     ReadLine(ser)
-    ReadPosition(ser)
+    position = ReadPosition(ser)
 
 def GoAngle(ser, num):
     current_angle = ReadAngle(ser)
@@ -83,10 +84,25 @@ def GoAngle(ser, num):
         if response.lower() != 'y':
             print("Operation cancelled.")
             return
-    command = "d1 {}\r\n".format(num)
+    if num > 0:
+        command = "d1 +{}\r\n".format(num)
+    else:
+        command = "d1 {}\r\n".format(num)
     ser.write(command.encode())
     ReadLine(ser)
     ser.write(b'abs1\r\n')
+    ReadLine(ser)
+    angle = ReadAngle(ser)
+
+def ResetPos(ser):
+    command = "rtncr2\r\n"
+    ser.write(command.encode())
+    ReadLine(ser)
+    position = ReadPosition(ser)
+
+def ResetAng(ser):
+    command = "rtncr1\r\n"
+    ser.write(command.encode())
     ReadLine(ser)
     angle = ReadAngle(ser)
 
@@ -95,7 +111,6 @@ def ReadLine(ser):
     while True:
         response = ser.readline().decode().rstrip("\r\n")
         if response == '':
-            print("Success")
             break
         if "Syntax error" in response:
             print("Syntax Error")
@@ -109,7 +124,6 @@ def ReadOutput(ser):
         if response == '':
             break
         print(response)
-
 
 try:
     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0.02)
@@ -126,57 +140,71 @@ try:
     ReadLine(ser)
     ser.write(b'vs2 100\r\n')
     ReadLine(ser)
-    ReadPosition(ser)
+    position = ReadPosition(ser)
+    angle    = ReadAngle(ser)
+
+    while True:
+        command = input("Command (or type help): ")
+        if command == 'exit':
+            ser.close()
+            break
+        elif command == 'pos':
+            position = ReadPosition(ser)
+        elif command == 'ang':
+            angle = ReadAngle(ser)
+        elif command == 'goEmpty':
+            GoPosition(ser, 0)
+        elif command == 'goScreen':
+            GoPosition(ser, 520)
+        elif command == 'goAu1':
+            GoPosition(ser, 850)
+        elif command == 'goAu2':
+            GoPosition(ser, 1170)
+        elif command.startswith('goPos'):
+            parts = command.split()
+            if len(parts) == 2:
+                try:
+                    position = int(parts[1])
+                    GoPosition(ser, position)
+                except ValueError:
+                    print("Error: arg[1] must be an integer value.")
+            else:
+                print("Error: Invalid command format. Use 'goPos <number>'.")
+        elif command.startswith('goAng'):
+            parts = command.split()
+            if len(parts) == 2:
+                try:
+                    angle = int(float(parts[1]) * 20)
+                    GoAngle(ser, angle)
+                except ValueError:
+                    print("Error: arg[1] must be a numeric value.")
+            else:
+                print("Error: Invalid command format. Use 'goAng <number>'.")
+        elif command == 'resetPos':
+            ResetPos(ser)
+        elif command == 'resetAng':
+            ResetAng(ser)
+        elif command == 'help':
+            print("pos        :  Read current position")
+            print("ang        :  Read current angle")
+            print("goEmpty    :  Go to an empty target")
+            print("goScreen   :  Go to the BaS screen target")
+            print("goAu1      :  Go to the Upper Au target")
+            print("goAu2      :  Go to the Lower Au target")
+            print("goPos step :  Go to a certain position (1 step = 0.1 mm)")
+            print("goAng deg  :  Go to certain angles, 0.05 deg unit in minimum")
+            # print("resetPos  :  Reset position to 0")
+            print("help      :  This help")
+            print("exit      :  Exit this script")
+        else:
+            print("unknown command, see help")
 
 except serial.SerialException as e:
     print(f"Connection Error: {e}")
-    ser.close()
     exit()
 
-while True:
-    command = input("Command (or type help): ")
-    if command == 'exit':
-        ser.close()
-        break
-    elif command == 'pos':
-        ReadPosition(ser)
-    elif command == 'ang':
-        angle = ReadAngle(ser)
-    elif command == 'goEmpty':
-        GoPosition(ser,0)
-    elif command == 'goScreen':
-        GoPosition(ser,500)
-    elif command == 'goAu1':
-        GoPosition(ser,830)
-    elif command == 'goAu2':
-        GoPosition(ser,1150)
-    elif command.startswith('goPos'):
-        parts = command.split()
-        if len(parts) == 2 and parts[1].isdigit():
-            GoPosition(ser, int(parts[1]))
-        else:
-            print("Error: Invalid command format. Use 'goPos <number>'.")
-    elif command.startswith('goAng'):
-        parts = command.split()
-        angle = int(parts[1]) * 20
-        GoAngle(ser, angle)
-#        if len(parts) == 2 and parts[1].isdigit():
-#            angle = int(parts[1]) * 20
-#            GoAngle(ser, angle)
-#        else:
-#            print("Error2: Invalid command format. Use 'goAng <number>'.")
-    elif command == 'help':
-        print("pos       :  Read current position")
-        print("ang       :  Read current angle")
-        print("goEmpty   :  Go to an empty target")
-        print("goScreen  :  Go to the BaS screen target")
-        print("goAu1     :  Go to the Upper Au target")
-        print("goAu2     :  Go to the Lower Au target")
-        print("goPos num :  Go to a certain position")
-        print("goAng num :  Go to certain angles, 0.2deg unit in minimum")
-#        print("resetPos  :  Reset position to 0")
-        print("help      :  This help")
-        print("exit      :  Exit this script")
-    else:
-        print("unknown command, see help")
-
+except KeyboardInterrupt:
+    print("\nKeyboard Interrupt detected. Closing serial connection.")
+    ser.close()
+    print("Serial connection closed. Exiting program.")
+    exit()
