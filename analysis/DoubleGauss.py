@@ -39,7 +39,7 @@ from scipy.optimize import curve_fit
 import math, os
 
 # -------- 初期設定（要変更） --------
-file_path = '/content/Ge1_Co60Ra226_115mm.spe'   # <--- 解析したいファイルを入力
+file_path = '/content/Data.spe'              # <--- 解析したいファイルを入力
 mu1 = 2829                                   # <--- 読み取ったピークの中心値を入力
 sigma1 = 4                                   # <--- 読み取ったピークの幅を入力
 mu2 = 3211                                   # <--- 読み取ったピークの中心値を入力
