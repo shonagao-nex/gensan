@@ -36,7 +36,7 @@ from scipy.optimize import curve_fit
 import math, os
 
 # -------- 初期設定（要変更） --------
-file_path = '/content/Ge1_Cs137_215mm.spe'   # <--- 解析したいファイルを入力
+file_path = '/content/Data.spe'   # <--- 解析したいファイルを入力
 mu = 1595                                    # <--- 読み取ったピークの中心値を入力
 sigma = 4                                    # <--- 読み取ったピークの幅を入力
 fit_range = [1550, 1650]                     # <--- フィットしたいレンジを入力
