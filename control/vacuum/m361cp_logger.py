@@ -110,4 +110,38 @@ if hv_status == "OFF":
 
     hv_resp2 = send("#00HV")
     hv_status2 = parse_hv_status(hv_resp2)
-    print(f"After HV ON
+    print(f"After HV ON attempt: {hv_resp2} -> {hv_status2}")
+
+# --- ログファイルがなければ作成 ---
+if not os.path.exists(logfile):
+    with open(logfile, "w") as f:
+        f.write("Timestamp,Pressure(Pa),ColdCathode\n")
+
+# ==============================
+# メインログ
+# ==============================
+
+try:
+    while True:
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+
+        # --- 圧力 ---
+        rd_resp = send("#00RD")
+        _, p_text = parse_pressure(rd_resp)
+
+        # --- HV状態 ---
+        hv_resp = send("#00HV")
+        hv_status = parse_hv_status(hv_resp)
+
+        # --- 保存 ---
+        line = f"{now}, {p_text}, {hv_status}\n"
+        with open(logfile, "a") as f:
+            f.write(line)
+
+        time.sleep(INTERVAL)
+
+except KeyboardInterrupt:
+    print("\nLogging stopped.")
+
+finally:
+    ser.close()
