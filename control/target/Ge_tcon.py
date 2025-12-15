@@ -69,7 +69,7 @@ def ReadPosition(ser):
                 elif status == 0:
                     pass
             if match_position:
-                position = int(match_moving.group(1))
+                position = int(match_position.group(1))
                 print("Position = {} step, {:.1f} mm".format(position, float(position) / 10))
         if status == 0:
             break
