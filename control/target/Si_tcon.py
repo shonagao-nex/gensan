@@ -256,7 +256,8 @@ try:
             print("goAu2      :  Go to the Lower Au target")
             print("goPos step :  Go to a certain position (1 step = 0.1 mm)")
             print("goAng deg  :  Go to certain angles, 0.05 deg unit in minimum")
-            # print("resetPos  :  Reset position to 0")
+            print("resetPos  :  Reset position to 0")
+            print("resetAng  :  Reset angle to 0")
             print("help      :  This help")
             print("exit      :  Exit this script")
         else:
